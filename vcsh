@@ -156,6 +156,7 @@ clone() {
 		exit
 	fi
 	git fetch
+	hook pre-merge
 	for object in $(git ls-tree -r origin/master | awk '{print $4}'); do
 		[ -e "$object" ] &&
 			error "'$object' exists." &&
@@ -165,6 +166,7 @@ clone() {
 		fatal "will stop after fetching and not try to merge!
   Once this situation has been resolved, run 'vcsh run $VCSH_REPO_NAME git pull' to finish cloning.\n" 17
 	git merge origin/master
+	hook post-merge
 	hook post-clone
 	retire
 	hook post-clone-retired
