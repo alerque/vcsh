@@ -11,6 +11,8 @@ vcsh(1) - Version Control System for $HOME - multiple Git repositories in $HOME
 
 `vcsh` enter <repo>
 
+`vcsh` foreach [-g] <git command>
+
 `vcsh` help
 
 `vcsh` init <repo>
@@ -19,7 +21,7 @@ vcsh(1) - Version Control System for $HOME - multiple Git repositories in $HOME
 
 `vcsh` list-tracked [<repo>]
 
-`vcsh` list-untracked [<-r>] [<repo>]
+`vcsh` list-untracked [<-a>] [<-r>] [<repo>]
 
 `vcsh` pull
 
@@ -37,9 +39,9 @@ vcsh(1) - Version Control System for $HOME - multiple Git repositories in $HOME
 
 `vcsh` which <substring>
 
-`vcsh` write-gitignore <repo>
+`vcsh` write-gitignore [<repo>]
 
-`vcsh` <repo> <git command>
+`vcsh` <repo> <gitcommand>
 
 `vcsh` <repo>
 
@@ -96,7 +98,12 @@ an interactive user.
   Delete an existing repository.
 
 * enter:
-  Enter repository; spawn new <$SHELL>.
+  Enter repository; spawn new <$SHELL> with <$GIT_DIR> set.
+
+* foreach:
+  Execute git command for every vcsh repository.
+
+  `-g`: Execute in general context.
 
 * help:
   Display help.
@@ -121,12 +128,14 @@ an interactive user.
 * list-untracked:
   List all files NOT tracked by vcsh.
 
-  By default, the file list is shallow and stops at directory levels where
-  possible. If you prefer to get a list of all files, append `-r` for
-  recursive mode.
+  `-a`: Show all files.
+  By default, the `git ls-files --exclude-standard` is called.
 
-  If you want to list files not tracked by a specific repository, simply
-  append the repository's name last.
+  `-r`: Recursive mode.
+  By default, the file list is shallow and stops at directory levels where
+  possible.
+
+  `$repo`: List files not tracked by this specific repository.
 
 * pull:
   Pull from all vcsh remotes.
@@ -161,10 +170,11 @@ an interactive user.
   Find <substring> in name of any tracked file.
 
 * write-gitignore:
-  Write .gitignore.d/<repo> via `git ls-files`.
+  Write .gitignore.d/<repo> via `git ls-files`. If <repo> is not specified but
+  we're withing a vcsh repository, use that.
 
 * <repo> <gitcommand>:
-  Shortcut to run `vcsh` on a repo. Will prepend `git` to <command>.
+  Shortcut to run `git` commands on a repo. Will prepend `git` to <gitcommand>.
 
 * <repo>:
   Shortcut to run `vcsh enter <repo>`.
@@ -211,7 +221,7 @@ Interesting knobs you can turn:
 
   Defaults to <exact>.
 
-* <$VCSH_VCSH_WORKTREE>:
+* <$VCSH_WORKTREE>:
   Can be <absolute>, or <relative>.
 
   <absolute> will set an absolute path; defaulting to <$HOME>.
@@ -329,7 +339,7 @@ config files, all of which were soft-linked into <$HOME>.
 Martin F. Krafft aka madduck came up with the concept of fake bare Git
 repositories.
 
-vcsh was initally written by madduck. This version is a re-implementation from
+vcsh was initially written by madduck. This version is a re-implementation from
 scratch with a lot more features. madduck graciously agreed to let the author
 take over the name.
 
